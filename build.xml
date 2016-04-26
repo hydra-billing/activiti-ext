@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<project name="LateraActivitiExtension" default="pack" basedir=".">
+  <description>
+    Activiti extension with some staff needed for Hydra BSS and Hydra Order Management System (homs)
+  </description>
+
+  <property name="src" location="src" />
+  <property name="dst" location="dst" />
+  <property name="dst.build" location="${dst}/build" />
+  <property name="dst.lib" location="${dst}/lib" />
+
+  <property name="groovy.home" value="/usr/share/groovy" />
+  <property name="groovy.version" value="1.8.6" />
+  <property name="java.libs" value="/usr/share/java" />
+  <path id="groovy.classpath">
+    <fileset dir="${groovy.home}/embeddable">
+      <include name="groovy-all-${groovy.version}.jar" />
+    </fileset>
+    <fileset dir="${java.libs}">
+      <include name="commons-logging.jar" />
+    </fileset>
+  </path>
+  <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="groovy.classpath" />
+
+  <property name="activiti.home" value="/tmp/activiti-explorer" />
+  <property name="activiti.version" value="5.19.0.2" />
+  <property name="slf4j.version" value="1.7.6" />
+  <property name="commons-io.version" value="2.0.1" />
+  <property name="http-builder.version" value="0.7.1" />
+  <property name="httpclient.version" value="4.5" />
+  <property name="httpcore.version" value="4.4.1" />
+  <path id="project.classpath">
+    <fileset dir="${activiti.home}/WEB-INF/lib">
+      <include name="activiti-engine-${activiti.version}.jar" />
+      <include name="slf4j-api-${slf4j.version}.jar" />
+      <include name="commons-io-${commons-io.version}.jar" />
+      <include name="http-builder-${http-builder.version}.jar" />
+      <include name="httpclient-${httpclient.version}.jar" />
+      <include name="httpcore-${httpcore.version}.jar" />
+    </fileset>
+  </path>
+
+  <target name="compile">
+    <mkdir dir="${dst.build}" />
+    <groovyc srcdir="${src}" listfiles="true" destdir="${dst.build}" classpathref="project.classpath" />
+  </target>
+
+  <target name="pack" depends="compile">
+    <mkdir dir="${dst.lib}" />
+    <jar jarfile="${dst.lib}/activiti-latera.jar" basedir="${dst.build}"/>
+  </target>
+  
+  <target name="clean">
+    <delete dir="${dst.build}" />
+    <delete dir="${dst.lib}" />
+  </target>
+</project>
