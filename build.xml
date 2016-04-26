@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="LateraActivitiExtension" default="pack" basedir=".">
   <description>
-    Activiti extension with some staff needed for Hydra BSS and Hydra Order Management System (homs)
+    Activiti extension with some stuff needed for Hydra BSS and Hydra Order Management System (homs)
   </description>
 
   <property name="src" location="src" />
