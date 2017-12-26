@@ -4,7 +4,7 @@ This repository keeps sources of Activiti extension with some stuff needed for H
 
 Requirements:
 * [Groovy](http://www.groovy-lang.org/) 1.8.6+
-* [Activiti](http://www.activiti.org/) 5.19.x
+* [Activiti](https://github.com/Activiti/Activiti/releases/tag/activiti-5.19.0.1) 5.19.x
 * Dependent jars:
   * [Apache Commons BeanUtils](http://commons.apache.org/proper/commons-beanutils/) 1.9.2
   * [Apache Commons Codec](https://commons.apache.org/proper/commons-codec/) 1.10
@@ -26,7 +26,7 @@ Requirements:
     ```bash
     sudo apt-get install groovy
     ```
-2. Download [Activiti 5.19.x](http://activiti.org/download.html) and unzip it.
+2. Download [Activiti 5.19.x](https://github.com/Activiti/Activiti/releases/tag/activiti-5.19.0.1) and unzip it.
 3. Unzip `wars/activiti-explorer.war`.
 4. Download and put all dependent jars to `WEB-INF/lib` directory of _activiti-explorer_.
 5. Download source code by git:
