@@ -5,14 +5,6 @@ import org.activiti.engine.delegate.Expression
 import org.activiti.latera.bss.http.HTTPRestProcessor
 
 public class GetOrderData extends AbstractListener {
-  private Expression homsUrl
-  private Expression homsUser
-  private Expression homsPassword
-  
-  def getParameterValue(def parameterName, def execution) {
-    def parameter = this."$parameterName"
-    parameter ? (String)parameter.getValue(execution) : execution.getVariable(parameterName)
-  }
   
   def getOrderData(def homsUrl, def homsUser, def homsPassword, def execution) {
     def homsOrderCode = execution.getVariable('homsOrderCode')
@@ -20,7 +12,7 @@ public class GetOrderData extends AbstractListener {
     def httpProcessor = new HTTPRestProcessor(execution: execution, baseUrl: "$homsUrl/api/")
     httpProcessor.httpClient.auth.basic(homsUser, homsPassword)
 
-    def homsResp = httpProcessor.sendRequest('get', path: "orders/$homsOrderCode")
+    def homsResp = httpProcessor.sendRequest('get', path: "orders/$homsOrderCode", execution: execution)
     def orderObj = homsResp["order"]
     def orderData = orderObj["data"].collectEntries{[it.key, it.value]}
 
@@ -31,13 +23,13 @@ public class GetOrderData extends AbstractListener {
     execution.setVariable("homsOrdDataBuffer", orderData)
   }
 
-  def execute() {
-    def homsUrl = getParameterValue('homsUrl', execution)
-    def homsUser = getParameterValue('homsUser', execution)
-    def homsPassword = getParameterValue('homsPassword', execution)
-    
-    log '/ Receiving order data...'
+  def execute(execution) {
+    def homsUrl = execution.getVariable('homsUrl')
+    def homsUser = execution.getVariable('homsUser')
+    def homsPassword = execution.getVariable('homsPassword')
+
+    log('/ Receiving order data...', "info", execution)
     getOrderData(homsUrl, homsUser, homsPassword, execution)
-    log '\\ Order data received'
+    log('\\ Order data received', "info", execution)
   }
 }

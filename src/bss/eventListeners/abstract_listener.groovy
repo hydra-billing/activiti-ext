@@ -4,34 +4,30 @@ import org.activiti.engine.delegate.event.*
 import org.activiti.engine.delegate.DelegateExecution
 
 public class AbstractListener implements ActivitiEventListener {
-  ActivitiEvent event
-  DelegateExecution execution
-  
+
   def public void onEvent(ActivitiEvent event) {
-    this.event = event
-    this.execution = getExecution()
-    
-    execute()
+    def execution = getExecution(event)
+
+    execute(execution, event)
   }
 
-  def protected execute() {
+  def protected execute(DelegateExecution execution, ActivitiEvent event) {
     // do stuff
   }
 
-  def protected getExecution() {
+  def protected getExecution(ActivitiEvent event) {
     def execution = null
-    
+
     def executionId = event.getExecutionId()
     if (executionId) {
       execution = event.getEngineServices().getRuntimeService().createExecutionQuery().executionId(executionId).singleResult()
     }
-    
     execution
   }
-  
-  def protected log(String msg, String level = "info") {
-    def logger = getLogger()
-    
+
+  def protected log(String msg, String level = "info", DelegateExecution execution) {
+    def logger = getLogger(execution)
+
     if (logger) {
       logger."${level}"(msg)
     } else {
@@ -39,9 +35,9 @@ public class AbstractListener implements ActivitiEventListener {
     }
   }
 
-  def protected getLogger() {
+  def protected getLogger(DelegateExecution execution) {
     def logger = null
-    
+
     if (execution) {
       logger = execution.getVariable("logger")
     }

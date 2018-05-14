@@ -1,49 +1,41 @@
 package org.activiti.latera.bss.eventListeners
+import org.activiti.engine.delegate.DelegateExecution
 
 import org.activiti.latera.bss.eventListeners.AbstractListener
 import org.activiti.engine.delegate.event.*
 import org.activiti.engine.delegate.event.impl.*
 
+import org.slf4j.LoggerFactory
+
 public class EventLogging extends AbstractListener {
-  def protected execute() {
+  def protected execute(DelegateExecution execution, ActivitiEvent event) {
+
     def logStr = "Occured ${event.getType()} event"
 
-    def detailedLogStr = getDetailedLog()
+    def detailedLogStr = getDetailedLog(event)
     if (detailedLogStr) {
       logStr = "${logStr}: ${detailedLogStr}"
     }
 
-    log logStr
+    log(logStr, 'debug', execution)
   }
 
-  def private getDetailedLog() {
+  def private getDetailedLog(ActivitiEvent event) {
     def detailedLog = null
     
     switch (event) {
       case ActivitiActivityEventImpl:
-        detailedLog = getActivityLog()
+        detailedLog = "${event.getActivityId()} (${event.getActivityType()} - ${event.getActivityName()})"
         break
       case ActivitiEntityEvent:
-        detailedLog = getEntityLog()
+        detailedLog = event.getEntity().getClass().name
         break
       case ActivitiVariableEvent:
-        detailedLog = getVariableLog()
+        detailedLog = "${event.getVariableName()} = ${event.getVariableValue()} (${event.getVariableType()})"
         break
     }
     
     detailedLog
-  }
-  
-  def private getActivityLog() {
-    "${event.getActivityId()} (${event.getActivityType()} - ${event.getActivityName()})"
-  }
-
-  def private getEntityLog() {
-    event.getEntity().getClass().name
-  }
-  
-  def private getVariableLog() {
-    "${event.getVariableName()} = ${event.getVariableValue()} (${event.getVariableType()})"
   }
 
   def public boolean isFailOnException() {
