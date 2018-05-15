@@ -6,9 +6,7 @@ import org.activiti.engine.delegate.DelegateExecution
 public class AbstractListener implements ActivitiEventListener {
 
   def public void onEvent(ActivitiEvent event) {
-    def execution = getExecution(event)
-
-    execute(execution, event)
+    execute(getExecution(event), event)
   }
 
   def protected execute(DelegateExecution execution, ActivitiEvent event) {

@@ -21,13 +21,9 @@ public class AbstractListener implements ExecutionListener {
   }
 
   def protected getLogger(DelegateExecution execution) {
-    def logger = null
-
     if (execution) {
-      logger = execution.getVariable("logger")
+      execution.getVariable("logger")
     }
-
-    logger
   }
 }
 

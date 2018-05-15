@@ -22,12 +22,12 @@ public class FinishOrder extends AbstractListener {
   }
 
   def execute(execution) {
-      def homsUrl = execution.getVariable('homsUrl')
-      def homsUser = execution.getVariable('homsUser')
-      def homsPassword = execution.getVariable('homsPassword')
+    def homsUrl = execution.getVariable('homsUrl')
+    def homsUser = execution.getVariable('homsUser')
+    def homsPassword = execution.getVariable('homsPassword')
 
-      log('/ Finishing order...', "info", execution)
-      finishOrder(homsUrl, homsUser, homsPassword, execution)
-      log('\\ Order finished', "info", execution)
+    log('/ Finishing order...', "info", execution)
+    finishOrder(homsUrl, homsUser, homsPassword, execution)
+    log('\\ Order finished', "info", execution)
   }
 }

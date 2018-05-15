@@ -25,17 +25,29 @@ public class EventLogging extends AbstractListener {
     
     switch (event) {
       case ActivitiActivityEventImpl:
-        detailedLog = "${event.getActivityId()} (${event.getActivityType()} - ${event.getActivityName()})"
+        detailedLog = getActivityLog(event)
         break
       case ActivitiEntityEvent:
-        detailedLog = event.getEntity().getClass().name
+        detailedLog = getEntityLog(event)
         break
       case ActivitiVariableEvent:
-        detailedLog = "${event.getVariableName()} = ${event.getVariableValue()} (${event.getVariableType()})"
+        detailedLog = getVariableLog(event)
         break
     }
     
     detailedLog
+  }
+
+  def private getActivityLog(ActivitiEvent event) {
+    "${event.getActivityId()} (${event.getActivityType()} - ${event.getActivityName()})"
+  }
+
+  def private getEntityLog(ActivitiEvent event) {
+    event.getEntity().getClass().name
+  }
+
+  def private getVariableLog(ActivitiEvent event) {
+    "${event.getVariableName()} = ${event.getVariableValue()} (${event.getVariableType()})"
   }
 
   def public boolean isFailOnException() {

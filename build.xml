@@ -9,20 +9,6 @@
   <property name="dst.build" location="${dst}/build" />
   <property name="dst.lib" location="${dst}/lib" />
 
-<!--
-  <property name="groovy.home" value="/usr/share/groovy" />
-  <property name="groovy.version" value="1.8.6" />
-  <property name="java.libs" value="/usr/share/java" />
-  <path id="groovy.classpath">
-    <fileset dir="${groovy.home}/embeddable">
-      <include name="groovy-all-${groovy.version}.jar" />
-    </fileset>
-    <fileset dir="${java.libs}">
-      <include name="commons-logging.jar" />
-    </fileset>
-  </path>
-  <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="groovy.classpath" />
--->
   <property name="groovy.home" value="/usr/local/share/groovy" />
   <property name="groovy.version" value="2.4.12" />
   <property name="java.libs" value="/usr/local/share/java" />
