@@ -12,7 +12,6 @@ public class HTTPRestProcessor {
 
   def HTTPRestProcessor(parameters) {
     this.httpClient = new RESTClient(parameters.baseUrl)
-    this.httpClient.ignoreSSLIssues()
   }
 
   def protected log(String msg, String level = "info", DelegateExecution execution = null) {
@@ -24,13 +23,9 @@ public class HTTPRestProcessor {
   }
 
   def protected getLogger(DelegateExecution execution) {
-    def logger = null
-
     if (execution) {
-      logger = execution.getVariable("logger")
+      execution.getVariable("logger")
     }
-
-    logger
   }
 
   def private responseBlock(failure=false, DelegateExecution execution=null) {

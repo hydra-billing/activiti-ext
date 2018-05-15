@@ -23,7 +23,7 @@
   </path>
   <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="groovy.classpath" />
 -->
-  <property name="groovy.home" value="/usr/local/Cellar/groovy" />
+  <property name="groovy.home" value="/usr/local/share/groovy" />
   <property name="groovy.version" value="2.4.12" />
   <property name="java.libs" value="/usr/local/share/java" />
   <path id="groovy.classpath">

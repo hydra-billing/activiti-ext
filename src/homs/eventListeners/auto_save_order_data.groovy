@@ -2,7 +2,7 @@ package org.activiti.latera.homs.eventListeners
 
 import org.activiti.latera.bss.eventListeners.AbstractListener
 import org.activiti.latera.bss.http.HTTPRestProcessor
-import org.activiti.engine.delegate.event.*
+import org.activiti.engine.delegate.event.ActivitiEvent
 import org.activiti.engine.delegate.DelegateExecution
 
 
@@ -11,9 +11,8 @@ public class AutoSaveOrderData extends AbstractListener {
   def execute(DelegateExecution execution, ActivitiEvent event) {
     if (isSavePossible(execution)) {
       def orderData = getOrderData(execution)
-      def orderDataBuffer = execution.getVariable('homsOrdDataBuffer')
 
-      if (orderData != orderDataBuffer) {
+      if (orderData != execution.getVariable('homsOrdDataBuffer')) {
         log('/ Saving order data...', "info", execution)
         saveOrderData(orderData, execution)
         execution.setVariable('homsOrdDataBuffer', orderData)

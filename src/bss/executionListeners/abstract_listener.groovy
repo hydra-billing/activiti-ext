@@ -8,7 +8,7 @@ public class AbstractListener implements ExecutionListener {
     execute(execution)
   }
 
-  def protected execute(execution) {
+  def protected execute(DelegateExecution execution) {
     // do stuff
   }
 
@@ -30,3 +30,4 @@ public class AbstractListener implements ExecutionListener {
     logger
   }
 }
+
