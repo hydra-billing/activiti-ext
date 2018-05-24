@@ -3,6 +3,7 @@ package org.activiti.latera.homs.executionListeners
 import org.activiti.latera.bss.executionListeners.AbstractListener
 import org.activiti.engine.delegate.Expression
 import org.activiti.latera.bss.http.HTTPRestProcessor
+import org.activiti.engine.delegate.DelegateExecution
 
 public class SaveOrderData extends AbstractListener {
   
@@ -27,7 +28,7 @@ public class SaveOrderData extends AbstractListener {
     httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj, execution: execution)
   }
 
-  def execute(execution) {
+  def execute(DelegateExecution execution) {
     def homsUrl = execution.getVariable('homsUrl')
     def homsUser = execution.getVariable('homsUser')
     def homsPassword = execution.getVariable('homsPassword')
