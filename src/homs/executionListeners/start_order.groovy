@@ -1,22 +1,19 @@
 package org.activiti.latera.homs.executionListeners
 
-import org.activiti.engine.delegate.Expression
 import org.activiti.latera.bss.executionListeners.AbstractListener
 import org.activiti.latera.bss.http.HTTPRestProcessor
+import org.activiti.engine.delegate.DelegateExecution
+import org.activiti.latera.bss.logging.Logging
 
-public class StartOrder extends AbstractListener {
-  private Expression homsUrl
-  private Expression homsUser
-  private Expression homsPassword
+class StartOrder extends AbstractListener {
   
-  def getParameterValue(def parameterName, def execution) {
-    def parameter = this."$parameterName"
-    parameter ? (String)parameter.getValue(execution) : execution.getVariable(parameterName)
-  }
-  
-  def startOrder(def homsUrl, def homsUser, def homsPassword, def execution) {
+  def startOrder(def execution, def logger) {
+    def homsUrl = execution.getVariable('homsUrl')
+    def homsUser = execution.getVariable('homsUser')
+    def homsPassword = execution.getVariable('homsPassword')
     def homsOrderCode = execution.getVariable('homsOrderCode')
     def initiatorEmail = execution.getVariable('initiatorEmail')
+
     def homsRequestObj = [
       order: [
         state: "in_progress",
@@ -27,18 +24,16 @@ public class StartOrder extends AbstractListener {
       ]
     ]
 
-    def httpProcessor = new HTTPRestProcessor(execution: execution, baseUrl: "$homsUrl/api/")
+    def httpProcessor = new HTTPRestProcessor(baseUrl: "$homsUrl/api/")
     httpProcessor.httpClient.auth.basic(homsUser, homsPassword)
-    httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj)
+    httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj, logger: logger)
   }
 
-  def execute() {
-    def homsUrl = getParameterValue('homsUrl', execution)
-    def homsUser = getParameterValue('homsUser', execution)
-    def homsPassword = getParameterValue('homsPassword', execution)
+  void notify(DelegateExecution execution) {
+    def logger = Logging.getLogger(execution)
 
-    log '/ Starting order...'    
-    startOrder(homsUrl, homsUser, homsPassword, execution)
-    log "\\ Order started"
+    Logging.log('/ Starting order...', "info", logger)
+    startOrder(execution, logger)
+    Logging.log("\\ Order started", "info", logger)
   }
 }

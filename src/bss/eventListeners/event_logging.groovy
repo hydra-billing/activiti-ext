@@ -1,52 +1,47 @@
 package org.activiti.latera.bss.eventListeners
 
-import org.activiti.latera.bss.eventListeners.AbstractListener
-import org.activiti.engine.delegate.event.*
-import org.activiti.engine.delegate.event.impl.*
+import org.activiti.engine.delegate.event.ActivitiEvent
+import org.activiti.engine.delegate.event.impl.ActivitiActivityEventImpl
+import org.activiti.engine.delegate.event.ActivitiEntityEvent
+import org.activiti.engine.delegate.event.ActivitiVariableEvent
+import org.activiti.latera.bss.logging.Logging
 
-public class EventLogging extends AbstractListener {
-  def protected execute() {
-    def logStr = "Occured ${event.getType()} event"
+class EventLogging extends AbstractListener {
 
-    def detailedLogStr = getDetailedLog()
+  void onEvent(ActivitiEvent event) {
+    def logStr = "Occurred ${event.getType()} event"
+    def detailedLogStr = getDetailedLog(event)
     if (detailedLogStr) {
       logStr = "${logStr}: ${detailedLogStr}"
     }
-
-    log logStr
+    Logging.log(logStr, 'info', Logging.getLogger(event))
   }
 
-  def private getDetailedLog() {
+  static private getDetailedLog(ActivitiEvent event) {
     def detailedLog = null
-    
     switch (event) {
       case ActivitiActivityEventImpl:
-        detailedLog = getActivityLog()
+        detailedLog = getActivityLog(event)
         break
       case ActivitiEntityEvent:
-        detailedLog = getEntityLog()
+        detailedLog = getEntityLog(event)
         break
       case ActivitiVariableEvent:
-        detailedLog = getVariableLog()
+        detailedLog = getVariableLog(event)
         break
     }
-    
     detailedLog
   }
-  
-  def private getActivityLog() {
+
+  static private getActivityLog(ActivitiEvent event) {
     "${event.getActivityId()} (${event.getActivityType()} - ${event.getActivityName()})"
   }
 
-  def private getEntityLog() {
+  static private getEntityLog(ActivitiEvent event) {
     event.getEntity().getClass().name
   }
-  
-  def private getVariableLog() {
-    "${event.getVariableName()} = ${event.getVariableValue()} (${event.getVariableType()})"
-  }
 
-  def public boolean isFailOnException() {
-    false
+  static private getVariableLog(ActivitiEvent event) {
+    "${event.getVariableName()} = ${event.getVariableValue()} (${event.getVariableType()})"
   }
 }
