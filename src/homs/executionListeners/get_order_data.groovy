@@ -27,7 +27,7 @@ class GetOrderData extends AbstractListener {
     execution.setVariable("homsOrdDataBuffer", orderData)
   }
 
-  def notify(DelegateExecution execution) {
+  void notify(DelegateExecution execution) {
     def logger = Logging.getLogger(execution)
 
     Logging.log('/ Receiving order data...', "info", logger)

@@ -26,7 +26,7 @@ class FinishOrder extends AbstractListener {
     httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj, logger: logger)
   }
 
-  def notify(DelegateExecution execution) {
+  void notify(DelegateExecution execution) {
 
     def logger = Logging.getLogger(execution)
 

@@ -10,7 +10,7 @@ public class InitLogging extends AbstractListener {
     Logging.log("Logger initialized", "info", logger)
   }
 
-  def notify(DelegateExecution execution) {
+  void notify(DelegateExecution execution) {
     testLogger(Logging.getLogger(execution))
   }
 }

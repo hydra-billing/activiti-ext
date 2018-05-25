@@ -32,7 +32,7 @@ class SaveOrderData extends AbstractListener {
     httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj, logger: logger)
   }
 
-  def notify(DelegateExecution execution) {
+  void notify(DelegateExecution execution) {
     def logger = Logging.getLogger(execution)
 
     Logging.log('/ Saving order data...', "info", logger)
