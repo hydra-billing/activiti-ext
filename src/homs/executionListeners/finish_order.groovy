@@ -1,14 +1,18 @@
 package org.activiti.latera.homs.executionListeners
 
 import org.activiti.latera.bss.executionListeners.AbstractListener
-import org.activiti.engine.delegate.Expression
 import org.activiti.latera.bss.http.HTTPRestProcessor
 import org.activiti.engine.delegate.DelegateExecution
+import org.activiti.latera.bss.logging.Logging
 
-public class FinishOrder extends AbstractListener {
+class FinishOrder extends AbstractListener {
 
-  def finishOrder(def homsUrl, def homsUser, def homsPassword, def execution) {
+  def finishOrder(def execution, def logger) {
+    def homsUrl = execution.getVariable('homsUrl')
+    def homsUser = execution.getVariable('homsUser')
+    def homsPassword = execution.getVariable('homsPassword')
     def homsOrderCode = execution.getVariable('homsOrderCode')
+
     def homsRequestObj = [
       order: [
         state   : "done",
@@ -17,18 +21,17 @@ public class FinishOrder extends AbstractListener {
       ]
     ]
 
-    def httpProcessor = new HTTPRestProcessor(execution: execution, baseUrl: "$homsUrl/api/")
+    def httpProcessor = new HTTPRestProcessor(baseUrl: "$homsUrl/api/")
     httpProcessor.httpClient.auth.basic(homsUser, homsPassword)
-    httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj, execution: execution)
+    httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj, logger: logger)
   }
 
-  def execute(DelegateExecution execution) {
-    def homsUrl = execution.getVariable('homsUrl')
-    def homsUser = execution.getVariable('homsUser')
-    def homsPassword = execution.getVariable('homsPassword')
+  def notify(DelegateExecution execution) {
 
-    log('/ Finishing order...', "info", execution)
-    finishOrder(homsUrl, homsUser, homsPassword, execution)
-    log('\\ Order finished', "info", execution)
+    def logger = Logging.getLogger(execution)
+
+    Logging.log('/ Finishing order...', "info", logger)
+    finishOrder(execution, logger)
+    Logging.log('\\ Order finished', "info", logger)
   }
 }

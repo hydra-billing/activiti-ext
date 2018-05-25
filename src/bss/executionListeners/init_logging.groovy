@@ -1,24 +1,16 @@
 package org.activiti.latera.bss.executionListeners
 
-import org.activiti.latera.bss.executionListeners.AbstractListener
 import org.activiti.engine.delegate.DelegateExecution
-import org.slf4j.LoggerFactory
+import org.activiti.latera.bss.logging.Logging
+import org.slf4j.Logger
 
 public class InitLogging extends AbstractListener {
-  def initLogger(DelegateExecution execution) {
-    def processId = "${execution.getProcessDefinitionId()} (${execution.getProcessInstanceId()})"
-    def logger = LoggerFactory.getLogger(processId)
 
-    execution.setVariable("logger", logger)
+  def testLogger(Logger logger) {
+    Logging.log("Logger initialized", "info", logger)
   }
 
-  def testLogger(DelegateExecution execution) {
-    log("Logger initialized", "info", execution)
-  }
-
-  def execute(DelegateExecution execution) {
-    initLogger(execution)
-    testLogger(execution)
+  def notify(DelegateExecution execution) {
+    testLogger(Logging.getLogger(execution))
   }
 }
-

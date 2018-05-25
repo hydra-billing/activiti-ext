@@ -4,26 +4,29 @@ import org.activiti.latera.bss.eventListeners.AbstractListener
 import org.activiti.latera.bss.http.HTTPRestProcessor
 import org.activiti.engine.delegate.event.ActivitiEvent
 import org.activiti.engine.delegate.DelegateExecution
+import org.activiti.latera.bss.logging.Logging
 
+class AutoSaveOrderData extends AbstractListener {
 
-public class AutoSaveOrderData extends AbstractListener {
+  void onEvent(ActivitiEvent event) {
+    def logger = Logging.getLogger(event)
+    def execution = getExecution(event)
 
-  def execute(DelegateExecution execution, ActivitiEvent event) {
     if (isSavePossible(execution)) {
       def orderData = getOrderData(execution)
 
       if (orderData != execution.getVariable('homsOrdDataBuffer')) {
-        log('/ Saving order data...', "info", execution)
-        saveOrderData(orderData, execution)
+        Logging.log('/ Saving order data...', "info", logger)
+        saveOrderData(orderData, execution, logger)
         execution.setVariable('homsOrdDataBuffer', orderData)
-        log('\\ Order data saved', "info", execution)
+        Logging.log('\\ Order data saved', "info", logger)
       } else {
-        log('Order data has not changed, save not needed', "info", execution)
+        Logging.log('Order data has not changed, save not needed', "info", logger)
       }
     }
   }
 
-  def private isSavePossible(DelegateExecution execution) {
+  static private isSavePossible(DelegateExecution execution) {
     execution && execution.getVariable('homsOrderCode') && execution.getVariable('homsOrdDataBuffer')
   }
 
@@ -41,7 +44,7 @@ public class AutoSaveOrderData extends AbstractListener {
     orderData
   }
 
-  def private saveOrderData(orderData, execution) {
+  static private saveOrderData(orderData, execution, logger) {
     def homsUrl = execution.getVariable('homsUrl')
     def homsUser = execution.getVariable('homsUser')
     def homsPassword = execution.getVariable('homsPassword')
@@ -55,10 +58,6 @@ public class AutoSaveOrderData extends AbstractListener {
 
     def httpProcessor = new HTTPRestProcessor(baseUrl: "$homsUrl/api/")
     httpProcessor.httpClient.auth.basic(homsUser, homsPassword)
-    httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj, execution: execution)
-  }
-
-  def public boolean isFailOnException() {
-    true
+    httpProcessor.sendRequest('put', path: "orders/$homsOrderCode", body: homsRequestObj, logger: logger)
   }
 }

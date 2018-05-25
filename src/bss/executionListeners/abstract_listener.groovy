@@ -1,29 +1,11 @@
 package org.activiti.latera.bss.executionListeners
 
-import org.activiti.engine.delegate.*
+import org.activiti.engine.delegate.ExecutionListener
+import org.activiti.engine.delegate.DelegateExecution
 
-public class AbstractListener implements ExecutionListener {
+class AbstractListener implements ExecutionListener {
 
-  def public void notify(DelegateExecution execution) {
-    execute(execution)
-  }
-
-  def protected execute(DelegateExecution execution) {
+  void notify(DelegateExecution execution) {
     // do stuff
   }
-
-  def protected log(String msg, String level = "info", DelegateExecution execution = null) {
-    def logger = getLogger(execution)
-
-    if (logger) {
-      logger."${level}"(msg)
-    }
-  }
-
-  def protected getLogger(DelegateExecution execution) {
-    if (execution) {
-      execution.getVariable("logger")
-    }
-  }
 }
-

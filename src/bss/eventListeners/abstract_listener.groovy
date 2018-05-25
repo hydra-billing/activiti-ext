@@ -1,19 +1,15 @@
 package org.activiti.latera.bss.eventListeners
 
-import org.activiti.engine.delegate.event.*
-import org.activiti.engine.delegate.DelegateExecution
+import org.activiti.engine.delegate.event.ActivitiEventListener
+import org.activiti.engine.delegate.event.ActivitiEvent
 
-public class AbstractListener implements ActivitiEventListener {
+class AbstractListener implements ActivitiEventListener {
 
-  def public void onEvent(ActivitiEvent event) {
-    execute(getExecution(event), event)
+  void onEvent(ActivitiEvent event) {
+    // Do stuff
   }
 
-  def protected execute(DelegateExecution execution, ActivitiEvent event) {
-    // do stuff
-  }
-
-  def protected getExecution(ActivitiEvent event) {
+  static protected getExecution(ActivitiEvent event) {
     def execution = null
 
     def executionId = event.getExecutionId()
@@ -23,28 +19,7 @@ public class AbstractListener implements ActivitiEventListener {
     execution
   }
 
-  def protected log(String msg, String level = "info", DelegateExecution execution) {
-    def logger = getLogger(execution)
-
-    if (logger) {
-      logger."${level}"(msg)
-    } else {
-      println msg
-    }
-  }
-
-  def protected getLogger(DelegateExecution execution) {
-    def logger = null
-
-    if (execution) {
-      logger = execution.getVariable("logger")
-    }
-
-    logger
-  }
-
-  def public boolean isFailOnException() {
+  boolean isFailOnException() {
     false
   }
 }
-

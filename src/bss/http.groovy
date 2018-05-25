@@ -1,47 +1,34 @@
 package org.activiti.latera.bss.http
 
-import org.activiti.engine.delegate.*
 import groovyx.net.http.RESTClient
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import java.io.InputStreamReader
 import org.apache.commons.io.IOUtils
+import org.activiti.latera.bss.logging.Logging
+import org.slf4j.Logger
 
 public class HTTPRestProcessor {
   public RESTClient httpClient
 
-  def HTTPRestProcessor(parameters) {
+  HTTPRestProcessor(parameters) {
     this.httpClient = new RESTClient(parameters.baseUrl)
   }
 
-  def protected log(String msg, String level = "info", DelegateExecution execution = null) {
-    def logger = getLogger(execution)
-
-    if (logger) {
-      logger."${level}"(msg)
-    }
-  }
-
-  def protected getLogger(DelegateExecution execution) {
-    if (execution) {
-      execution.getVariable("logger")
-    }
-  }
-
-  def private responseBlock(failure=false, DelegateExecution execution=null) {
+  def private responseBlock(Boolean failure=false, Logger logger = null) {
     {resp, reader ->
       def respStatusLine = resp.statusLine
 
-      log("Response status: ${respStatusLine}", "info", execution)
-      log("Response data: -----", "info", execution)
+      Logging.log("Response status: ${respStatusLine}", "info", logger)
+      Logging.log("Response data: -----", "info", logger)
       if (reader) {
         if (reader instanceof InputStreamReader) {
-          log(IOUtils.toString(reader), "info", execution)
+          Logging.log(IOUtils.toString(reader), "info", logger)
         } else {
-          log(reader.toString(), "info", execution)
+          Logging.log(reader.toString(), "info", logger)
         }
       }
-      log("--------------------", "info", execution)
+      Logging.log("--------------------", "info", logger)
 
       if (failure) {
         throw new HttpResponseException(resp)
@@ -51,26 +38,26 @@ public class HTTPRestProcessor {
     }
   }
 
-  def public sendRequest(params, String method) {
-    def execution = params.execution
-    params.remove('execution')
+  def sendRequest(params, String method) {
+    Logger logger = params.logger
+    params.remove('logger')
 
     if (!params.requestContentType) {
       params.requestContentType = ContentType.JSON
     }
 
-    log("/ Sending HTTP ${method.toUpperCase()} request (${httpClient.defaultURI}${params.path})...", "info", params.execution)
+    Logging.log("/ Sending HTTP ${method.toUpperCase()} request (${httpClient.defaultURI}${params.path})...", "info", logger)
     if (params.body) {
-      log("Request data: ------", "info", execution)
-      log(params.body.toString(), "info", execution)
-      log("--------------------", "info", execution)
+      Logging.log("Request data: ------", "info", logger)
+      Logging.log(params.body.toString(), "info", logger)
+      Logging.log("--------------------", "info", logger)
     }
 
-    httpClient.handler.success = responseBlock(false, execution)
-    httpClient.handler.failure = responseBlock(true, execution)
+    httpClient.handler.success = responseBlock(false, logger)
+    httpClient.handler.failure = responseBlock(true, logger)
 
     def result = httpClient."${method}"(params)
-    log("\\ HTTP request sent", "info", execution)
+    Logging.log("\\ HTTP request sent", "info", logger)
     result
   }
 }
